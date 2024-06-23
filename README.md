@@ -11,7 +11,7 @@ $> bashbro -s -p 5555
 To view a bashbro server on the default port 8880: 
 open your web browser to localhost:8880
 ```
-![Bashbro Demo](Bashbro.gif)
+![Bashbro Demo](assets/bashbro_demo.gif)
 > [!TIP]
 > *When using Chrome browser localhost may be blocked, in that case you can use your ip for instance 
 > 192.168.1.55:8880 - no tickets on this plz, it's a Windows/Chrome thing.*
