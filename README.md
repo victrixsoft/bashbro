@@ -18,6 +18,13 @@ To start bashbro on a remote server:
 
 ```
 ![Bashbro Demo](assets/bashbro_demo.gif)
+
+You can also download bashbro directly: 
+
+`curl -S https://raw.githubusercontent.com/victrixsoft/bashbro/main/bashbro > bashbro && chmod +x bashbro && ./bashbro -s -p=6556`
+
+`wget -o bashbro https://raw.githubusercontent.com/victrixsoft/bashbro/main/bashbro && chmod +x bashbro && ./bashbro -s -p=6556`
+
 > [!TIP]
 > *When using Chrome browser localhost may be blocked, in that case you can use your ip for instance 
 > 192.168.1.55:8880 - no tickets on this plz, it's a Windows/Chrome thing.*
