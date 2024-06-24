@@ -16,6 +16,7 @@ open your web browser to localhost:8880
 > *When using Chrome browser localhost may be blocked, in that case you can use your ip for instance 
 > 192.168.1.55:8880 - no tickets on this plz, it's a Windows/Chrome thing.*
 
+[![Bash](https://img.shields.io/badge/Bash-4EAA25?logo=gnubash&logoColor=fff)](#)
 ![Tree version 1.6+](https://img.shields.io/badge/Tree-v1.6+-green)
 ![Sed](https://img.shields.io/badge/Sed--orange)
 ![Socat](https://img.shields.io/badge/Socat--blue)
