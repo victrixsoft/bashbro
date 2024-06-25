@@ -1,9 +1,9 @@
 # bashbro
-A Bash-based web file browser. Allows you to remotely browse, view documents and save files via your web browser.  
+A Bash-based web file browser. Allows you to remotely browse, stream, view documents and save files via your web browser.  
 
 ![Bashbro Usage](assets/bashbro_usage.png)
 ```
-To start the bashbro locally on port 5555: 
+To start bashbro locally on port 5555: 
 $> bashbro -s -p 5555
 
 To start bashbro on a remote server:
