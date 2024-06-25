@@ -1,7 +1,5 @@
 # bashbro
-A Bash-based web file browser. 
-
-Allows you to remotely browse, stream, view documents and save files via your web browser.  
+A Bash-based web file browser - allowing you to remotely browse, stream, view documents and save files via your web browser.  
 
 ![Bashbro Usage](assets/bashbro_usage.png)
 ```
