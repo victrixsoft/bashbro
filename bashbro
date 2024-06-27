@@ -4,8 +4,8 @@
  ######################################################################
 ##              (2024) Victrixsoft - Copyrighted 
 ##
-## Author: Adam M. Danischewski, Created: 20240616, Version: v1.03
-## Last Modified: 20240619
+## Author: Adam M. Danischewski, Created: 20240616, Version: v1.04
+## Last Modified: 20240627
 ##
 ## Issues: If you find any issues please open a ticket on github! 
 ##         https://github.com/victrixsoft/bashbro/issues
@@ -50,7 +50,7 @@ declare    OLDOPTS=""
 declare -i DEBUG=1 
 declare -r DEBUG_OUTPUT="/tmp/__${0##*/}__"
 declare -i VERBOSE=1
-declare -r VERSION=1.03
+declare -r VERSION=1.04
 declare -a REQUEST_HEADERS
 declare    REQUEST_URI="" 
 declare -r FAIL_FLAG=1
@@ -173,60 +173,59 @@ function serve_dir_or_file_from() {
   URL_PATH=$(urldecode "${URL_PATH}") 
   [[ $URL_PATH == *..* ]] && fail_with 400
   if [[ -f "${URL_PATH}" ]]; then
-     [[ -r "${URL_PATH}" ]] && \
-        serve_file "${URL_PATH}" "$@" || fail_with 403
+   [[ -r "${URL_PATH}" ]] && \
+    serve_file "${URL_PATH}" "$@" || fail_with 403
   elif [[ -d "${URL_PATH}" ]]; then
-     [[ -x "${URL_PATH}" ]] && \
-        serve_dir  "${URL_PATH}" "$@" || fail_with 403
+   [[ -x "${URL_PATH}" ]] && \
+    serve_dir  "${URL_PATH}" "$@" || fail_with 403
   fi
   fail_with 404
 }
 
 function on_uri_match() {
-  local regex="$1"
-  shift
-  [[ "${REQUEST_URI}" =~ $regex ]] && "$@" "${BASH_REMATCH[@]}"
+ local regex="$1"
+ shift
+ [[ "${REQUEST_URI}" =~ $regex ]] && "$@" "${BASH_REMATCH[@]}"
 }
  
 function run() { 
-  local line="" 
+ local line="" 
  local REQUEST_METHOD=""
  local REQUEST_HTTP_VERSION="" 
- [[ ${UID} = 0 ]] && warn "It is not recommended to run ${0##*/} as root."
  read -r line || fail_with 400
  line=${line%%$'\r'}
  read -r REQUEST_METHOD REQUEST_URI REQUEST_HTTP_VERSION <<< "${line}"
  [ -n "${REQUEST_METHOD}" ] && [ -n "${REQUEST_URI}" ] && \
-  [ -n "${REQUEST_HTTP_VERSION}" ] || fail_with 400
+ [ -n "${REQUEST_HTTP_VERSION}" ] || fail_with 400
  [ "${REQUEST_METHOD}" = "GET" ] || fail_with 405
  while IFS= read -r line; do
-   line=${line%%$'\r'}
-   [ -z "${line}" ] && break
-   REQUEST_HEADERS+=("${line}")
+  line=${line%%$'\r'}
+  [ -z "${line}" ] && break
+  REQUEST_HEADERS+=("${line}")
  done
 } 
 
 function check_reqs() {
-local -i PASS_OR_FAIL=0
-local tver=""
-getopt -T
-[ "$?" != 4 ] && { echo "Wrong version of 'getopt' .." && PASS_OR_FAIL+=1; }
-which sed &>"${DISCARD_DEV}" || { echo "Missing sed .. " && PASS_OR_FAIL+=1; }
-which socat &>"${DISCARD_DEV}" || { echo "Missing socat .. " && PASS_OR_FAIL+=1; }
-if which tree &>"${DISCARD_DEV}"; then 
- read _ tver x < <(tree --version)
- tver=${tver//.};tver=${tver//v};tver=${tver:0:2}
- ((${tver}<16)) && echo "Incorrect tree version, ${0##*/} requires v1.6+ .. " && PASS_OR_FAIL+=1  
-else 
- echo "Missing tree .. "
- PASS_OR_FAIL+=1
-fi
-((${PASS_OR_FAIL}>0)) && { echo "Failed dependencies check, exiting .. " && exit 1; }
+ local -i PASS_OR_FAIL=0
+ local tver=""
+ getopt -T
+ [ "$?" != 4 ] && { echo "Wrong version of 'getopt' .." && PASS_OR_FAIL+=1; }
+ which sed &>"${DISCARD_DEV}" || { echo "Missing sed .. " && PASS_OR_FAIL+=1; }
+ which socat &>"${DISCARD_DEV}" || { echo "Missing socat .. " && PASS_OR_FAIL+=1; }
+ if which tree &>"${DISCARD_DEV}"; then 
+  read _ tver x < <(tree --version)
+  tver=${tver//.};tver=${tver//v};tver=${tver:0:2}
+  ((${tver}<16)) && echo "Incorrect tree version, ${0##*/} requires v1.6+ .. " && PASS_OR_FAIL+=1  
+ else 
+  echo "Missing tree .. "
+  PASS_OR_FAIL+=1
+ fi
+ ((${PASS_OR_FAIL}>0)) && { echo "Failed dependencies check, exiting .. " && exit 1; }
 }
 
 function usage() {
-local RETURN_CODE=${SUCCESS_FLAG}
- read -r -d '' USAGE <<EOF || RETURN_CODE=${FAIL_FLAG}
+ local RETURN_CODE=${SUCCESS_FLAG}
+read -r -d '' USAGE <<EOF || RETURN_CODE=${FAIL_FLAG}
 \n
 ${CLI_C["LCYAN"]}Usage:${CLI_C["NC"]} ${CLI_C["YELLOW"]}${0##*/}\
 ${CLI_C["NC"]} <-s [-p=<port #>]> | [<-v|--version>|<-h|--help>] 
@@ -250,8 +249,8 @@ web-based file server, after
      instead of localhost (e.g. 192.1.168.x:8880) ${CLI_C["NC"]}
 \n
 EOF
-echo -e "$USAGE"
-return ${RETURN_CODE}
+ echo -e "$USAGE"
+ return ${RETURN_CODE}
 } 
 
 function error_nonexist_opt() {
@@ -266,16 +265,16 @@ function error_missing_port() {
 }
 
 function proc_opts() {
-local -r OLDOPTS="$(shopt -po errexit)"
-set -e
-[[ "$@" =~ -[?] ]] && { usage; exit 0; }
-local params="$(getopt -o p:vshV -l port:,version,start,help,verbose --name "${0##*/}" -- "$@")"
-if [[ "${params}" == " --" ]]; then 
- var=$(ps -ef | sed -n "/[s]ocat.*${LISTEN_PORT}.*bashro/s/.*/1/p")
-fi
-eval set -- "$params" && unset params
-while true
-do
+ local -r OLDOPTS="$(shopt -po errexit)"
+ set -e
+ [[ "$@" =~ -[?] ]] && { usage; exit 0; }
+ local params="$(getopt -o p:vshV -l port:,version,start,help,verbose --name "${0##*/}" -- "$@")"
+ if [[ "${params}" == " --" ]]; then 
+  var=$(ps -ef | sed -n "/[s]ocat.*${LISTEN_PORT}.*bashro/s/.*/1/p")
+ fi
+ eval set -- "$params" && unset params
+ while true
+ do
     case "$1" in
         -s|--start)
             START_SERVER=1
@@ -313,22 +312,23 @@ do
             ;;
     esac
     shift  
-done
-eval "$OLDOPTS"
-[[ -n $2 ]] && error_nonexist_opt
+ done
+ eval "$OLDOPTS"
+ [[ -n $2 ]] && error_nonexist_opt
 }
 
 function main() { 
-check_reqs
-proc_opts "$@"
-if ((${START_SERVER}==1)); then  
- echo -e "${CLI_C["GREEN"]}Starting Bashbro on port: $LISTEN_PORT .. ${CLI_C["NC"]}"
- socat TCP4-LISTEN:${LISTEN_PORT},fork EXEC:"${PROG}" 2>"${DISCARD_DEV}" 
-else 
- run 
- on_uri_match '/(.*)' serve_dir_or_file_from 
- fail_with 500
-fi  
+ check_reqs
+ proc_opts "$@"
+ if ((${START_SERVER}==1)); then
+  [[ ${UID} = 0 ]] && warn "It is not recommended to run ${0##*/} as root."
+  echo -e "${CLI_C["GREEN"]}Starting Bashbro on port: $LISTEN_PORT .. ${CLI_C["NC"]}"
+  socat TCP4-LISTEN:${LISTEN_PORT},fork EXEC:"${PROG}" 2>"${DISCARD_DEV}" 
+ else 
+  run 
+  on_uri_match '/(.*)' serve_dir_or_file_from 
+  fail_with 500
+ fi  
 }
 
 main "$@"
