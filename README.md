@@ -5,6 +5,8 @@ A Bash-based web file browser - allowing you to remotely browse, stream, view do
 ```
 To start bashbro locally on port 5555: 
 $> bashbro -s -p 5555
+   -or- (condensed syntax)
+$> bashbro -sp5555
 
 To start bashbro on a remote server:
 
