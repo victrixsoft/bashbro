@@ -1,0 +1,54 @@
+.\" Manpage for bashbro.
+.\" Contact adam.danischewski@gmail.com to correct errors or typos.
+.TH bashbro 1 "28 Jun 2024" "1.0" "User Commands"
+.SH NAME
+bashbro \- A Bash-based web file browser 
+.SH SYNOPSIS
+bashbro  [-?|-h|-s|-p|-V]
+.SH DESCRIPTION
+.PP
+.br
+Bashbro allows remotely browsing, streaming, viewing and saving files via 
+.br
+web browser.
+.br 
+.SH OPTIONS
+.IP -?|-h|--help 15n
+- Help
+.IP -s|--start 15n
+- Start bashbro HTTP file server 
+.IP -p|--port 15n
+- Set port for bashbro to use
+.IP -V|--verbose 15n
+- Verbose
+.IP -v|--version 15n
+-Display bashbro version
+.SH EXAMPLES 
+.PP
+To start bashbro locally on port 5555: 
+.br
+bashbro -s -p 5555
+.br
+   -or- (condensed syntax)
+.br
+bashbro -sp5555
+.br
+.SH CAVEATS
+.br
+When using Chrome browser localhost may be blocked, in that case use
+.br
+your ip instead, for instance 192.168.1.55:8880.
+.br
+.SH FILES
+.I /usr/bin/bashbro
+.\".RS
+.SH BUGS
+No known bugs. Report requests, issues and bugs to:
+.br
+https://github.com/victrixsoft/bashbro/issues
+.SH COPYRIGHT
+Copyright ©2024 Adam Danischewski, GNU GPL v3.0
+.br
+GNU GPL v3, <http://www.gnu.org/licenses/>
+.SH AUTHOR
+Adam Danischewski <adam.danischewski@gmail.com>
