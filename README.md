@@ -17,7 +17,6 @@ E.g. scp bashbro <youruser>@<server name/ip>:
 E.g. ssh <youruser>@<server name/ip> ./bashbro -s -p=<port>
 
 (Open a browser to <server name/ip>:<port>)
-
 ```
 ![Bashbro Demo](https://raw.githubusercontent.com/victrixsoft/bashbro/assets/assets/bashbro_demo.gif)
 
