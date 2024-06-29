@@ -19,7 +19,7 @@ To start bashbro on a remote server:
 (Open a browser to <server name/ip>:<port>)
 
 ```
-![Bashbro Demo](assets/bashbro_demo.gif)
+![Bashbro Demo](https://raw.githubusercontent.com/victrixsoft/bashbro/assets/assets/bashbro_demo.gif)
 
 You can also download bashbro directly: 
 
