@@ -20,14 +20,14 @@ E.g. ssh <youruser>@<server name/ip> ./bashbro -s -p=<port>
 ```
 ![Bashbro Demo](https://raw.githubusercontent.com/victrixsoft/bashbro/assets/assets/bashbro_demo.gif)
 
-# Installation
+# Downloading
 > [!TIP]
 > To avoid downloading the big images in assets branch, clone it like this:<br> 
 > `git clone https://github.com/victrixsoft/bashbro.git --depth 1`
 
-You can also download `bashbro` directly: 
+You can also download and run `bashbro` directly `(e.g. to get & run on port 6556)`: 
 
-`curl -S https://raw.githubusercontent.com/victrixsoft/bashbro/main/bashbro > bashbro && chmod +x bashbro && ./bashbro -sp6556`
+`curl -O https://raw.githubusercontent.com/victrixsoft/bashbro/main/bashbro && chmod +x bashbro && ./bashbro -sp6556`
 
 `wget -O bashbro https://raw.githubusercontent.com/victrixsoft/bashbro/main/bashbro && chmod +x bashbro && ./bashbro -sp6556`
 
