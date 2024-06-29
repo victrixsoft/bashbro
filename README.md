@@ -20,7 +20,11 @@ E.g. ssh <youruser>@<server name/ip> ./bashbro -s -p=<port>
 ```
 ![Bashbro Demo](https://raw.githubusercontent.com/victrixsoft/bashbro/assets/assets/bashbro_demo.gif)
 
-You can also download bashbro directly: 
+> [!TIP]
+> To avoid downloading the big images in assets branch, clone it like this:<br> 
+> `git clone https://github.com/victrixsoft/bashbro.git --depth 1`
+
+You can also download `bashbro` directly: 
 
 `curl -S https://raw.githubusercontent.com/victrixsoft/bashbro/main/bashbro > bashbro && chmod +x bashbro && ./bashbro -s -p=6556`
 
@@ -29,6 +33,8 @@ You can also download bashbro directly:
 > [!TIP]
 > *When using Chrome browser localhost may be blocked, in that case you can use your ip for instance 
 > 192.168.1.55:8880 - no tickets on this plz, it's a Windows/Chrome thing.*
+
+
 
 <p align="center" width="100%">
     <img src="https://img.shields.io/badge/Bash-4EAA25?logo=gnubash&logoColor=fff">    
