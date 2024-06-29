@@ -1,7 +1,7 @@
 # bashbro
 A Bash-based web file browser - allowing you to remotely browse, stream, view documents and save files via your web browser.  
 
-![Bashbro Usage](assets/bashbro_usage.png)
+![Bashbro Usage](https://raw.githubusercontent.com/victrixsoft/bashbro/assets/assets/bashbro_usage.png)
 ```
 To start bashbro locally on port 5555: 
 $> bashbro -s -p 5555
@@ -11,10 +11,10 @@ $> bashbro -sp5555
 To start bashbro on a remote server:
 
  1. Copy bashbro to the remote server
-    E.g. scp bashbro <youruser>@<server name/ip>:
+E.g. scp bashbro <youruser>@<server name/ip>:
 
  2. Run bashbro
-    E.g. ssh <youruser>@<server name/ip> ./bashbro -s -p=<port>
+E.g. ssh <youruser>@<server name/ip> ./bashbro -s -p=<port>
 
 (Open a browser to <server name/ip>:<port>)
 
