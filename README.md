@@ -1,5 +1,5 @@
 # bashbro
-A Bash-based web file browser - allowing you to remotely browse, stream, view documents and save files via your web browser.  
+A Bash-based web file browser - allowing you to remotely browse, stream, view documents and save files via your web browser. Runs on Windows via WSL.  
 
 ![Bashbro Usage](https://raw.githubusercontent.com/victrixsoft/bashbro/assets/assets/bashbro_usage.png)
 ```
@@ -22,10 +22,10 @@ E.g. ssh <youruser>@<server name/ip> ./bashbro -s -p=<port>
 
 # Downloading
 > [!TIP]
-> To avoid downloading the big images in assets branch, clone it like this:<br> 
+> *To avoid downloading big images in `assets` branch, clone it like this:*<br> 
 > `git clone https://github.com/victrixsoft/bashbro.git --depth 1`
 
-You can also fetch and run `bashbro` directly `(e.g. get/run on port 6556)`: 
+You can also fetch and run **`bashbro`** directly `(e.g. get/run on port 6556)`: 
 ```
 curl -O https://raw.githubusercontent.com/victrixsoft/bashbro/main/bashbro && chmod +x bashbro && ./bashbro -sp6556
 ```
