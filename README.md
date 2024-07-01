@@ -46,3 +46,6 @@ wget -O bashbro https://raw.githubusercontent.com/victrixsoft/bashbro/main/bashb
     <img src="https://img.shields.io/badge/Socat--blue">
     <img src="https://img.shields.io/badge/getopt-T=4-yellow">
 </p>
+<p align="center" width="100%">
+<img src="https://www.gnu.org/graphics/gplv3-with-text-136x68.png">
+</p>
