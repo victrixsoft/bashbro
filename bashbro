@@ -5,7 +5,7 @@
 ##              (2024) Victrixsoft - Copyrighted 
 ##
 ## Author: Adam M. Danischewski, Created: 20240616, Version: v1.04
-## Last Modified: 20240627
+## Last Modified: 20240701
 ##
 ## Issues: If you find any issues please open a ticket on github! 
 ##         https://github.com/victrixsoft/bashbro/issues
@@ -55,7 +55,6 @@ declare -a REQUEST_HEADERS
 declare    REQUEST_URI="" 
 declare -r FAIL_FLAG=1
 declare -r SUCCESS_FLAG=0
-declare    EXIT_CODE=${SUCCESS_FLAG}
 declare -i START_SERVER=0
 declare -A CLI_C=(
    ["YELLOW"]="\033[0;1;33m"
@@ -86,13 +85,12 @@ declare -a RESPONSE_HEADERS=(
     "Server: Bashbro - Bash HTTP File Server"
 )
 
-function warn() { ((${VERBOSE})) && echo "WARNING: $@" >&2; }
-function send() { ((${VERBOSE})) && echo "> $@" >&2; echo "$*"; ((${DEBUG})) && echo "< $@" >> "${DEBUG_OUTPUT}"; }
+function warn() { ((VERBOSE)) && echo "WARNING: $*" >&2; }
+function send() { ((VERBOSE)) && echo "> $*" >&2; echo "$*"; ((DEBUG)) && echo "< $*" >> "${DEBUG_OUTPUT}"; }
 
 function add_response_header() { RESPONSE_HEADERS+=("$1: $2"); }
 
 function send_response_binary() {
- local code="${1}"
  local file="${2}" 
  local transfer_stats="" 
  local tmp_stat_file="/tmp/_send_response_$$_"
@@ -101,7 +99,7 @@ function send_response_binary() {
     send "$i"
  done
  send
- if ((${VERBOSE})); then 
+ if ((VERBOSE)); then 
   dd 2>"${tmp_stat_file}" < "${file}" 
   transfer_stats=$(<"${tmp_stat_file}") 
   echo -en ">> Transferred: ${file}\n>> $(sed -n '/copied/p' <<< "${transfer_stats}")\n" >&2  
@@ -112,7 +110,6 @@ function send_response_binary() {
 }   
 
 function send_response() {
-  local code="$1"
   send "HTTP/1.0 $1 ${HTTP_RESPONSE[$1]}"
   for i in "${RESPONSE_HEADERS[@]}"; do
      send "$i"
@@ -150,7 +147,7 @@ function serve_file() {
 }
 
 function serve_dir_with_tree() {
-  local dir="$1" tree_vers tree_opts basehref x
+  local dir="$1" 
   local no_favicon=" <link href=\"data:image/x-icon;base64,${FAVICON}\" rel=\"icon\" type=\"image/x-icon\" />"  
   local tree_page=""
   local base_server_path="/${2%/}"
@@ -215,12 +212,12 @@ function check_reqs() {
  if which tree &>"${DISCARD_DEV}"; then 
   read _ tver x < <(tree --version)
   tver=${tver//.};tver=${tver//v};tver=${tver:0:2}
-  ((${tver}<16)) && echo "Incorrect tree version, ${0##*/} requires v1.6+ .. " && PASS_OR_FAIL+=1  
+  ((tver<16)) && echo "Incorrect tree version, ${0##*/} requires v1.6+ .. " && PASS_OR_FAIL+=1  
  else 
   echo "Missing tree .. "
   PASS_OR_FAIL+=1
  fi
- ((${PASS_OR_FAIL}>0)) && { echo "Failed dependencies check, exiting .. " && exit 1; }
+ ((PASS_OR_FAIL>0)) && { echo "Failed dependencies check, exiting .. " && exit 1; }
 }
 
 function usage() {
@@ -267,11 +264,8 @@ function error_missing_port() {
 function proc_opts() {
  local -r OLDOPTS="$(shopt -po errexit)"
  set -e
- [[ "$@" =~ -[?] ]] && { usage; exit 0; }
+ [[ "$1" =~ -[?] ]] && { usage; exit 0; }
  local params="$(getopt -o p:vshV -l port:,version,start,help,verbose --name "${0##*/}" -- "$@")"
- if [[ "${params}" == " --" ]]; then 
-  var=$(ps -ef | sed -n "/[s]ocat.*${LISTEN_PORT}.*bashro/s/.*/1/p")
- fi
  eval set -- "$params" && unset params
  while true
  do
@@ -280,8 +274,8 @@ function proc_opts() {
             START_SERVER=1
             ;;
         -p|--port)
-            if [[ ! -z "${2}" ]]; then 
-              if [[ ! "${2}" =~ ^- ]] && [[ ! -z "${2//[[:space:]]}" ]]; then 
+            if [[ -n "${2}" ]]; then 
+              if [[ ! "${2}" =~ ^- ]] && [[ -n "${2//[[:space:]]}" ]]; then 
                { [[ -n "${2#=}" ]] && [[ "${2#=}" =~ ^[0-9]+$ ]] && \
                 LISTEN_PORT=${2#=}; } || error_missing_port
               else             
@@ -308,19 +302,19 @@ function proc_opts() {
             ;;
         *) 
             [[ -z ${1//[[:space:]]} ]] && break ## All good, was an optional arg            
-            error_nonexist_opt
+            error_nonexist_opt ${1}
             ;;
     esac
     shift  
  done
  eval "$OLDOPTS"
- [[ -n $2 ]] && error_nonexist_opt
+ [[ -n $2 ]] && error_nonexist_opt ${2}
 }
 
 function main() { 
  check_reqs
  proc_opts "$@"
- if ((${START_SERVER}==1)); then
+ if ((START_SERVER==1)); then
   [[ ${UID} = 0 ]] && warn "It is not recommended to run ${0##*/} as root."
   echo -e "${CLI_C["GREEN"]}Starting Bashbro on port: $LISTEN_PORT .. ${CLI_C["NC"]}"
   socat TCP4-LISTEN:${LISTEN_PORT},fork EXEC:"${PROG}" 2>"${DISCARD_DEV}" 
