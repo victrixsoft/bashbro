@@ -4,8 +4,8 @@
  ######################################################################
 ##              (2024) Victrixsoft - Copyrighted 
 ##
-## Author: Adam M. Danischewski, Created: 20240616, Version: v1.04
-## Last Modified: 20240701
+## Author: Adam M. Danischewski, Created: 20240616, Version: v1.05
+## Last Modified: 20240711
 ##
 ## Issues: If you find any issues please open a ticket on github! 
 ##         https://github.com/victrixsoft/bashbro/issues
@@ -50,9 +50,11 @@ declare    OLDOPTS=""
 declare -i DEBUG=1 
 declare -r DEBUG_OUTPUT="/tmp/__${0##*/}__"
 declare -i VERBOSE=1
-declare -r VERSION=1.04
+declare -r VERSION=1.05
 declare -a REQUEST_HEADERS
 declare    REQUEST_URI="" 
+declare    JAIL=".." 
+declare    JAIL_FILE="" 
 declare -r FAIL_FLAG=1
 declare -r SUCCESS_FLAG=0
 declare -i START_SERVER=0
@@ -127,7 +129,7 @@ function send_response_ok_exit_binary() { send_response_binary 200  "${1}"; exit
 function fail_with() { send_response "$1" <<< "$1 ${HTTP_RESPONSE[$1]}"; exit 1; }
 
 function serve_file() {
-  local file="$1"
+  local file="${JAIL_FILE:-$1}"
   local CONTENT_TYPE=""
   case "${file}" in
     *\.css)
@@ -152,9 +154,10 @@ function serve_dir_with_tree() {
   local tree_page=""
   local base_server_path="/${2%/}"
   [ "$base_server_path" = "/" ] && base_server_path=".." 
-  local tree_opts="--du -h -a --dirsfirst" 
+  [[ ! "$dir" =~  ^$JAIL ]] && dir="$JAIL" && base_server_path="$JAIL"
+  local tree_opts="--du -C -h -a --dirsfirst" 
   add_response_header "Content-Type" "text/html"
-  tree_page=$(tree -H "$base_server_path" -L 1 ${tree_opts} -D "${dir}")
+  tree_page=$(tree -H "${base_server_path}" -L 1 ${tree_opts} -D "${dir}")
   tree_page=$(sed "5 i ${no_favicon}" <<< "${tree_page}")  
   tree_page=$(sed '6 i <meta http-equiv="Content-Language" content="en">' <<< "${tree_page}")
   send_response_ok_exit <<< "${tree_page}"  
@@ -169,8 +172,10 @@ function serve_dir_or_file_from() {
   shift
   URL_PATH=$(urldecode "${URL_PATH}") 
   [[ $URL_PATH == *..* ]] && fail_with 400
-  if [[ -f "${URL_PATH}" ]]; then
-   [[ -r "${URL_PATH}" ]] && \
+  if [[ -n "${JAIL_FILE}" && -f "${JAIL_FILE}" && -r "${JAIL_FILE}" ]]; then 
+    serve_file "${JAIL_FILE}" "$@" || fail_with 403
+  elif [[ -f "${URL_PATH}" && -r "${URL_PATH}" ]]; then
+    [[ "$JAIL" != ".." ]] && [[ ! "$URL_PATH" =~ ^$JAIL ]] && fail_with 403
     serve_file "${URL_PATH}" "$@" || fail_with 403
   elif [[ -d "${URL_PATH}" ]]; then
    [[ -x "${URL_PATH}" ]] && \
@@ -223,28 +228,27 @@ function check_reqs() {
 function usage() {
  local RETURN_CODE=${SUCCESS_FLAG}
 read -r -d '' USAGE <<EOF || RETURN_CODE=${FAIL_FLAG}
-\n
 ${CLI_C["LCYAN"]}Usage:${CLI_C["NC"]} ${CLI_C["YELLOW"]}${0##*/}\
-${CLI_C["NC"]} <-s [-p=<port #>]> | [<-v|--version>|<-h|--help>] 
+${CLI_C["NC"]} <-s [-p=<port #>] [-j|--jail]> | [<-v|--version>|<-h|--help>] 
  
   ${CLI_C["LCYAN"]}Description:${CLI_C["NC"]} Bashbro starts a bash\
 web-based file server, after 
                launching connect to the server via web browser. 
-               Default port is 8880
+               Default port is 8880, jailed files only serve that file
 
     ${CLI_C["LCYAN"]}  Options:${CLI_C["NC"]} 
              -?/-h/--help    --     Show usage
                -s/--start    --     Start Bashbro - Http file server
                 -p/--port <port #>  Set port for socat to listen on  
+                -j/--jail  <path>   Sets jail valid path to dir/file  
              -v/--version    --     Print version
              -V/--verbose    --     Verbose
       
- ${CLI_C["LGREEN"]}  E.g. %> ${0##*/} -s -p=5544\
+ ${CLI_C["LGREEN"]}  E.g. %> ${0##*/} -sp5544 -j/tmp\
   # Now open localhost:5544${CLI_C["NC"]}  
  
  ${CLI_C["ORANGE"]} ** Note: on Chrome browsers, you may need to use your IP address
      instead of localhost (e.g. 192.1.168.x:8880) ${CLI_C["NC"]}
-\n
 EOF
  echo -e "$USAGE"
  return ${RETURN_CODE}
@@ -261,17 +265,40 @@ function error_missing_port() {
  exit 1
 }
 
+function error_bad_jail() { 
+ echo -e "${CLI_C["RED"]} >>> Error, jail location \"${1}\"\
+ not found or inaccessible (check perms).${CLI_C["NC"]}"
+ exit 1
+}
+
 function proc_opts() {
  local -r OLDOPTS="$(shopt -po errexit)"
  set -e
  [[ "$1" =~ -[?] ]] && { usage; exit 0; }
- local params="$(getopt -o p:vshV -l port:,version,start,help,verbose --name "${0##*/}" -- "$@")"
+ local params="$(getopt -o p:vj:shV -l port:,version,start,jail,help,verbose --name "${0##*/}" -- "$@")"
  eval set -- "$params" && unset params
  while true
  do
     case "$1" in
         -s|--start)
             START_SERVER=1
+            ;;
+        -j|--jail)
+            if [[ -n "${2}" ]]; then 
+              if [[ ! "${2}" =~ ^-  &&  -n "${2//[[:space:]]}" ]]; then 
+                if [[ -n "${2#=}" && -r "${2#=}" ]]; then 
+		  JAIL=${2#=}
+		  [[ -f "${JAIL}" ]] && JAIL_FILE="${JAIL}" 
+	        else
+		  error_bad_jail "${2#=}"
+		fi
+              else             
+		error_bad_jail "${2#=}"
+              fi 
+              shift
+            else 
+	     error_bad_jail "${2#=}"
+            fi
             ;;
         -p|--port)
             if [[ -n "${2}" ]]; then 
@@ -317,7 +344,11 @@ function main() {
  if ((START_SERVER==1)); then
   [[ ${UID} = 0 ]] && warn "It is not recommended to run ${0##*/} as root."
   echo -e "${CLI_C["GREEN"]}Starting Bashbro on port: $LISTEN_PORT .. ${CLI_C["NC"]}"
-  socat TCP4-LISTEN:${LISTEN_PORT},fork EXEC:"${PROG}" 2>"${DISCARD_DEV}" 
+  if [[ "${JAIL}" != ".." ]]; then 
+   [[ -n "$JAIL_FILE" ]] && echo -e "${CLI_C["ORANGE"]}Jailed to serving file: $JAIL_FILE ..${CLI_C["NC"]}" \
+   || echo -e "${CLI_C["ORANGE"]}Jailed to serving directory: $JAIL ..${CLI_C["NC"]}"  
+  fi  
+  socat TCP4-LISTEN:${LISTEN_PORT},fork EXEC:"${PROG} -j=${JAIL}" 2>"${DISCARD_DEV}" 
  else 
   run 
   on_uri_match '/(.*)' serve_dir_or_file_from 
