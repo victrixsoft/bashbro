@@ -154,7 +154,8 @@ function serve_dir_with_tree() {
   local tree_page=""
   local base_server_path="/${2%/}"
   [ "$base_server_path" = "/" ] && base_server_path=".." 
-  [[ ! "$dir" =~  ^$JAIL ]] && dir="$JAIL" && base_server_path="$JAIL"
+  [[ "$JAIL" != ".." && ! "$dir" =~  ^"$JAIL" ]] && dir="$JAIL" && base_server_path="$JAIL"
+  # [[ ! "$dir" =~  ^"$JAIL" ]] && dir="$JAIL" && base_server_path="$JAIL"
   local tree_opts="--du -C -h -a --dirsfirst" 
   add_response_header "Content-Type" "text/html"
   tree_page=$(tree -H "${base_server_path}" -L 1 ${tree_opts} -D "${dir}")
