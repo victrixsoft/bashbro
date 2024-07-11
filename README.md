@@ -1,5 +1,5 @@
 # bashbro
-A Bash-based web file browser - allowing you to remotely browse, stream, view documents and save files via your web browser. Runs on Windows via WSL.  
+A Bash-based web file browser - allowing you to remotely browse, stream, view documents and save files via your web browser. Runs on Windows via WSL.
 
 ![Bashbro Usage](https://raw.githubusercontent.com/victrixsoft/bashbro/assets/assets/bashbro_usage.png)
 ```
@@ -7,6 +7,14 @@ To start bashbro locally on port 5555:
 $> bashbro -s -p 5555
    -or- (condensed syntax)
 $> bashbro -sp5555
+
+To start bashbro on port 7878, jailing to directory /tmp: 
+$> bashbro -sp7878 -j/tmp 
+
+To serve a single file on port 7878, jailing to file /path/to/file: 
+$> bashbro -sp7878 -j/path/to/file 
+
+Note: When you jail to a file, bashbro will serve only that single file.  
 
 To start bashbro on a remote server:
 
