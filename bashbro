@@ -1,11 +1,11 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash 
 
   ######################################################################
  ######################################################################
 ##              (2024) Victrixsoft - Copyrighted 
 ##
 ## Author: Adam M. Danischewski, Created: 20240616, Version: v1.05
-## Last Modified: 20240711
+## Last Modified: 20240712
 ##
 ## Issues: If you find any issues please open a ticket on github! 
 ##         https://github.com/victrixsoft/bashbro/issues
@@ -155,12 +155,12 @@ function serve_dir_with_tree() {
   local base_server_path="/${2%/}"
   [ "$base_server_path" = "/" ] && base_server_path=".." 
   [[ "$JAIL" != ".." && ! "$dir" =~  ^"$JAIL" ]] && dir="$JAIL" && base_server_path="$JAIL"
-  # [[ ! "$dir" =~  ^"$JAIL" ]] && dir="$JAIL" && base_server_path="$JAIL"
   local tree_opts="--du -C -h -a --dirsfirst" 
   add_response_header "Content-Type" "text/html"
   tree_page=$(tree -H "${base_server_path}" -L 1 ${tree_opts} -D "${dir}")
   tree_page=$(sed "5 i ${no_favicon}" <<< "${tree_page}")  
   tree_page=$(sed '6 i <meta http-equiv="Content-Language" content="en">' <<< "${tree_page}")
+  tree_page=$(sed '/href/s/#/%23/g' <<< "${tree_page}")
   send_response_ok_exit <<< "${tree_page}"  
 }
 
@@ -171,14 +171,14 @@ function urldecode() { [ "${1%/}" = "" ] && echo "/" ||  echo -e "$(sed 's/%\([[
 function serve_dir_or_file_from() {
   local URL_PATH="${1}/${3}"
   shift
-  URL_PATH=$(urldecode "${URL_PATH}") 
-  [[ $URL_PATH == *..* ]] && fail_with 400
+  URL_PATH="$(urldecode "${URL_PATH}")"
   if [[ -n "${JAIL_FILE}" && -f "${JAIL_FILE}" && -r "${JAIL_FILE}" ]]; then 
     serve_file "${JAIL_FILE}" "$@" || fail_with 403
   elif [[ -f "${URL_PATH}" && -r "${URL_PATH}" ]]; then
     [[ "$JAIL" != ".." ]] && [[ ! "$URL_PATH" =~ ^$JAIL ]] && fail_with 403
     serve_file "${URL_PATH}" "$@" || fail_with 403
   elif [[ -d "${URL_PATH}" ]]; then
+   [[ "$URL_PATH" == *..* ]] && fail_with 400
    [[ -x "${URL_PATH}" ]] && \
     serve_dir  "${URL_PATH}" "$@" || fail_with 403
   fi
