@@ -4,7 +4,7 @@
 .SH NAME
 bashbro \- A Bash-based web file browser 
 .SH SYNOPSIS
-bashbro  [-?|-h|-s|-p|-V]
+bashbro  [-?|-h|-s|-p|-j|-V]
 .SH DESCRIPTION
 .PP
 .br
@@ -19,6 +19,8 @@ web browser.
 - Start bashbro HTTP file server 
 .IP -p|--port 15n
 - Set port for bashbro to use
+.IP -j|--jail 15n
+- Sets jail requires valid path to dir/file
 .IP -V|--verbose 15n
 - Verbose
 .IP -v|--version 15n
@@ -27,11 +29,10 @@ web browser.
 .PP
 To start bashbro locally on port 5555: 
 .br
-bashbro -s -p 5555
+bashbro -sp 5555
 .br
-   -or- (condensed syntax)
-.br
-bashbro -sp5555
+To start bashbro on port 6565 jailed to /tmp:
+bashbro -sp6565 -j/tmp
 .br
 .SH CAVEATS
 .br
