@@ -1,18 +1,18 @@
 Source: bashbro
-Section: net 
+Section: net
 Priority: optional
 Maintainer: Adam Danischewski <adam.danischewski@gmail.com>
 Rules-Requires-Root: no
 Build-Depends:
  debhelper-compat (= 13)
 Standards-Version: 4.6.2
-Homepage: https://github.com/victrixsoft/bashbro 
+Homepage: https://github.com/victrixsoft/bashbro
 
 Package: bashbro
 Architecture: all
 Multi-Arch: foreign
 Depends:
  ${misc:Depends}, tree, socat
-Description: Bash-based web file browser. 
- Remotely browse, stream, view documents and save files via 
- your web browser. 
+Description: Bash-based web file browser.
+ Remotely browse, stream, view documents and save files via
+ your web browser.
