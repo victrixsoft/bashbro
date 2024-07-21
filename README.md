@@ -1,5 +1,5 @@
 # bashbro
-A Bash-based web file browser - allowing you to remotely browse, stream, view documents and save files via your web browser. Runs on Windows via WSL.
+A Bash-based web file browser - allowing you to remotely browse, stream, view documents and save files via your web browser. Runs on Windows via WSL. 
 
 ![Bashbro Usage](https://raw.githubusercontent.com/victrixsoft/bashbro/assets/assets/bashbro_usage.png)
 # Usage
@@ -71,5 +71,5 @@ $${\color{orange} Requirements:}$$
     <img src="https://img.shields.io/badge/getopt-T=4-yellow">
 </p>
 <p align="center" width="100%">
-<img src="https://www.gnu.org/graphics/gplv3-with-text-136x68.png">
+ <img src="https://www.gnu.org/graphics/gplv3-with-text-136x68.png">
 </p>
