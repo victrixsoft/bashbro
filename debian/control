@@ -5,7 +5,7 @@ Maintainer: Adam Danischewski <adam.danischewski@gmail.com>
 Rules-Requires-Root: no
 Build-Depends:
  debhelper-compat (= 13)
-Standards-Version: 4.6.2
+Standards-Version: 4.7.0
 Homepage: https://github.com/victrixsoft/bashbro
 
 Package: bashbro

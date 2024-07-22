@@ -2,11 +2,8 @@ Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Source: https://github.com/victrixsoft/bashbro.git 
 Upstream-Name: bashbro
 Upstream-Contact: Adam Danischewski <adam.danischewski@gmail.com> 
-
-Files:
- debian/*
-Copyright:
- 2024 Adam Danischewski <adam.danischewski@gmail.com>
+Files: debian/*
+Copyright: 2024 Adam Danischewski <adam.danischewski@gmail.com>
 License: GPL-3+
  This package is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -20,7 +17,5 @@ License: GPL-3+
  .
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <https://www.gnu.org/licenses/>
-Comment:
- On Debian systems, the complete text of the GNU General
- Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".
-
+Comment: On Debian systems, the complete text of the GNU General
+ Public License version 3 can be found in "/usr/share/common-licenses/GPL-3".
