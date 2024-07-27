@@ -13,6 +13,6 @@ Architecture: all
 Multi-Arch: foreign
 Depends:
  ${misc:Depends}, tree, socat
-Description: Bash-based web file browser.
+Description: bash web file browser
  Remotely browse, stream, view documents and save files via
  your web browser.
