@@ -1,5 +1,5 @@
-bashbro (1.08-1) unstable; urgency=medium
+bashbro (1.09-1) unstable; urgency=medium
 
   * Initial release. (Closes: #1074463)
 
- -- Adam Danischewski <adam.danischewski@gmail.com>  Sat, 27 Jul 2024 09:03:02 -0400
+ -- Adam Danischewski <adam.danischewski@gmail.com>  Wed, 7 Aug 2024 09:03:02 -0400
