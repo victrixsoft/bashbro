@@ -50,7 +50,7 @@ declare    OLDOPTS=""
 declare -i DEBUG=1 
 declare -r DEBUG_OUTPUT="/tmp/__${0##*/}__"
 declare -i VERBOSE=1
-declare -r VERSION=1.05
+declare -r VERSION=1.12
 declare -a REQUEST_HEADERS
 declare    REQUEST_URI="" 
 declare    JAIL=".." 
