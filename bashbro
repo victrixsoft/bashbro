@@ -4,8 +4,8 @@
  ######################################################################
 ##              (2024) Victrixsoft - Copyrighted 
 ##
-## Author: Adam M. Danischewski, Created: 20240616, Version: v1.05
-## Last Modified: 20240712
+## Author: Adam M. Danischewski, Created: 20240616, Version: v1.13
+## Last Modified: 20241010
 ##
 ## Issues: If you find any issues please open a ticket on github! 
 ##         https://github.com/victrixsoft/bashbro/issues
@@ -50,7 +50,7 @@ declare    OLDOPTS=""
 declare -i DEBUG=1 
 declare -r DEBUG_OUTPUT="/tmp/__${0##*/}__"
 declare -i VERBOSE=1
-declare -r VERSION=1.12
+declare -r VERSION=1.13
 declare -a REQUEST_HEADERS
 declare    REQUEST_URI="" 
 declare    JAIL=".." 
